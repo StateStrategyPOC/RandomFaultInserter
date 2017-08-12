@@ -25,9 +25,10 @@ class FaultInserter():
         self.insert_fault()
 
     def pick_class(self):
-        classes_in_package = [class_path for class_path in os.listdir(self.jave_package_path) if os.path.isfile(object)]
+        classes_in_package = [class_path for class_path in os.listdir(self.jave_package_path)
+                              if os.path.isfile(self.jave_package_path+"/"+class_path)]
         selected_class = random.randint(0, len(classes_in_package) - 1)
-        self.selected_class = classes_in_package[selected_class]
+        self.selected_class = self.jave_package_path+"/"+classes_in_package[selected_class]
 
     def pick_line(self):
         lines_count = 0
