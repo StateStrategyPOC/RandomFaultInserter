@@ -53,10 +53,10 @@ def main():
         if args[1] == "" or args[2] == "":
             print("THIS SCRIPT REQUIRES NON EMPTY ARGS")
             exit(-1)
-        if not(os.path.isdir(args[1])):
+        if not (os.path.isdir(args[1])):
             print("THIS SCRIPT REQUIRES A VALID PACKAGE DIR PATH")
             exit(-1)
-        fault_inserter = FaultInserter()
+        FaultInserter(args[1], args[2])
 
 
 if __name__ == '__main__':
