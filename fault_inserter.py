@@ -13,14 +13,14 @@ belongs to.
 """
 
 import os
-import os.path
 import random
 import sys
 import re
 
 
 class FaultInserter():
-    def __init__(self, jave_package_path, fault_shape, forced_class):
+    def __init__(self, jave_package_path, fault_shape, iterations, forced_class):
+        self.iterations = int(iterations)
         self.method_regex = \
             re.compile('\s*(public |private |protected )(static )?(final )?(synchronized )?(\w* )'
                        '?\w+\(.*\)( throws \w+ )?\s*{\n')
@@ -29,9 +29,10 @@ class FaultInserter():
         self.fault_shape = fault_shape
         self.selected_class = None
         self.indexed_methods = []
-        self.pick_class()
-        self.index_methods()
-        self.insert_fault()
+        for i in range(0,self.iterations):
+            self.pick_class()
+            self.index_methods()
+            self.insert_fault()
 
     def index_methods(self):
         methods_dicts = []
@@ -73,12 +74,18 @@ class FaultInserter():
         print(self.selected_class)
         print(selected_method)
 
+def is_number(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
 
 def main():
     args = sys.argv
     argc = len(args)
-    if argc != 3 and argc != 4:
-        print("THIS SCRIPT REQUIRES THE FOLLOWING ARGS: [PATH_TO_PACKAGE_DIR], [FAULT_SHAPE],[SPECIFIC_CLASS]?")
+    if argc != 4 and argc != 5:
+        print("THIS SCRIPT REQUIRES THE FOLLOWING ARGS: [PATH_TO_PACKAGE_DIR] [FAULT_SHAPE] [ITERATIONS] [SPECIFIC_CLASS]?")
     else:
         if args[1] == "" or args[2] == "":
             print("THIS SCRIPT REQUIRES NON EMPTY ARGS")
@@ -86,10 +93,13 @@ def main():
         if not (os.path.isdir(args[1])):
             print("THIS SCRIPT REQUIRES A VALID PACKAGE DIR PATH")
             exit(-1)
-        if argc == 4:
-            FaultInserter(args[1], args[2], args[3])
+        if is_number(args[3]) is False:
+            print("THIS SCRIPT REQUIRES A VALID INTEGER NUMBER OF ITERATIONS")
+            exit(-1)
+        if argc == 5:
+            FaultInserter(args[1], args[2], args[3], args[4])
         else:
-            FaultInserter(args[1], args[2], None)
+            FaultInserter(args[1], args[2], args[3],None)
 
 
 if __name__ == '__main__':
